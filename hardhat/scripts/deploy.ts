@@ -68,36 +68,30 @@ let user1: SignerWithAddress;
   
   let initialPoolEth = hre.ethers.utils.parseEther('0.5');
 
-  await deployer.sendTransaction({ to: fanToEarn.address, value: initialPoolEth, gasLimit: 10000000, nonce: nonce + 3 });
+  await deployer.sendTransaction({ to: fanToEarn.address, value: initialPoolEth, gasLimit: 10000000, nonce: nonce + 1 });
 
 
     const artifactsPath = join(
       processDir,
       `./artifacts/contracts/${toDeployContract.artifactsPath}`
     );
-    const Metadata = JSON.parse(readFileSync(artifactsPath, 'utf-8'));
-    const Contract = await ethers.getContractFactory(toDeployContract.name);
-    const contract = await Contract.deploy.apply(
-      Contract,
-      toDeployContract.ctor
-    );
-
+  
    
     //const signer:Signer = await hre.ethers.getSigners()
 
     writeFileSync(
       `${contract_path}/${toDeployContract.jsonName}_metadata.json`,
       JSON.stringify({
-        abi: Metadata.abi,
+        abi: FanToEarn__factory.abi,
         name: toDeployContract.name,
-        address: contract.address,
+        address: fanToEarn.address,
         network: network,
       })
     );
 
     console.log(
       toDeployContract.name + ' Contract Deployed to:',
-      contract.address
+      fanToEarn.address
     );
 
     ///// copy Interfaces and create Metadata address/abi to assets folder

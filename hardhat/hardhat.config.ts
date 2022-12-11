@@ -34,7 +34,7 @@ const defaultNetwork = 'localhost';
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: '0.8.4',
+    version: '0.8.17',
     settings: {
       optimizer: {
         enabled: true,
@@ -43,39 +43,18 @@ const config: HardhatUserConfig = {
     },
   },
   defaultNetwork,
-
   networks: {
-    // hardhat: {
-    //   forking: {
-    //     url: `https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_ID_MUMBAI}`,
-    //     blockNumber: 25953748,
-    //   },
-    // },
+    hardhat: {
+      allowUnlimitedContractSize: true,
+      forking: {
+        url: `https://goerli.infura.io/v3/1e43f3d31eea4244bf25ed4c13bfde0e`,
+        blockNumber: 7850256
+        },  
+        chainId: 1337
+    },
     localhost: {
       url: 'http://localhost:8545',
-      chainId: 31337,
-    },
-    rinkeby: {
-      url: `https://rinkeby.infura.io/v3/${INFURA_ID}`, // <---- YOUR INFURA ID! (or it won't work)
-      // `https://speedy-nodes-nyc.moralis.io/${MORALIS_ID}/eth/rinkeby`
-      accounts:
-        process.env['DEPLOYER_KEY'] !== undefined
-          ? [process.env['DEPLOYER_KEY']]
-          : [],
-      // accounts: {
-      //   mnemonic: mnemonic(),
-      // },
-    },
-    kovan: {
-      url: `https://kovan.infura.io/v3/${INFURA_ID}`, // <---- YOUR INFURA ID! (or it won't work)
-      // `https://speedy-nodes-nyc.moralis.io/${MORALIS_ID}/eth/kovan`
-      accounts:
-        process.env['DEPLOYER_KEY'] !== undefined
-          ? [process.env['DEPLOYER_KEY']]
-          : [],
-      // accounts: {
-      //   mnemonic: mnemonic(),
-      // },
+      chainId: 1337,
     },
     mainnet: {
       url: `https://mainnet.infura.io/v3/${INFURA_ID}`, // <---- YOUR INFURA ID! (or it won't work)
@@ -87,24 +66,16 @@ const config: HardhatUserConfig = {
           ? [process.env['DEPLOYER_KEY']]
           : [],
     },
-    ropsten: {
-      url: `https://ropsten.infura.io/v3/${INFURA_ID}`, // <---- YOUR INFURA ID! (or it won't work)
-      // `https://speedy-nodes-nyc.moralis.io/${MORALIS_ID}/eth/ropsten`
-          accounts:
-        process.env['DEPLOYER_KEY'] !== undefined
-          ? [process.env['DEPLOYER_KEY']]
-          : [],
-    },
     goerli: {
-      url: `https://goerli.infura.io/v3/${INFURA_ID}`, // <---- YOUR INFURA ID! (or it won't work)
-      // `https://speedy-nodes-nyc.moralis.io/${MORALIS_ID}/eth/goerli`
-          accounts:
+      url: `https://goerli.infura.io/v3/1e43f3d31eea4244bf25ed4c13bfde0e`, // <---- YOUR INFURA ID! (or it won't work)
+      gasPrice: 1000000000,   
+      accounts:
         process.env['DEPLOYER_KEY'] !== undefined
           ? [process.env['DEPLOYER_KEY']]
           : [],
     },
-    xdai: {
-      url: 'https://rpc.xdaichain.com/',
+    optgoerli: {
+      url: 'https://optimism-goerli.infura.io/v3/1e43f3d31eea4244bf25ed4c13bfde0e',
       gasPrice: 1000000000,
           accounts:
         process.env['DEPLOYER_KEY'] !== undefined
@@ -121,7 +92,7 @@ const config: HardhatUserConfig = {
           : [],
     },
     mumbai: {
-      url: `https://speedy-nodes-nyc.moralis.io/${MORALIS_ID}/polygon/mumbai`, // <---- YOUR MORALIS ID! (not limited to infura)
+      url: process.env.MUMBAI_URL || "", // <---- YOUR MORALIS ID! (not limited to infura)
       // `https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_ID_MUMBAI}`
       gasPrice: 1000000000,
           accounts:
@@ -138,10 +109,6 @@ const config: HardhatUserConfig = {
           ? [process.env['DEPLOYER_KEY']]
           : [],
     },
-    // ropsten: {
-    //   url: process.env["ROPSTEN_URL"] || "",
-    //   accounts: process.env["DEPLOYER_KEY"] !== undefined ? [process.env["DEPLOYER_KEY"]] : [],
-    // },
   },
   gasReporter: {
     enabled: process.env['REPORT_GAS'] !== undefined,
@@ -149,6 +116,9 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: process.env['ETHERSCAN_API_KEY'],
+  },
+  mocha: {
+    timeout: 100000000
   },
 };
 

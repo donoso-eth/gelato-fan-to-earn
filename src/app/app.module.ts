@@ -19,16 +19,24 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AppRoutingModule } from './app-routing.module';
+import { LoadingComponent } from './shared/components/loading/loading.component';
+import { AppTopBarComponent } from './shared/components/toolbar/app.topbar.component';
+import { AppFooterComponent } from './shared/components/footer/app.footer.component';
 
 const network = 'localhost';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LoadingComponent,
+    AppTopBarComponent,
+    AppFooterComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    AppRoutingModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,

@@ -23,6 +23,10 @@ struct NFTLending {
 }
 
 contract FanToEarn is ERC721 {
+
+ // owner
+  address immutable owner;
+
   /// ERC721
   uint256 tokenId;
 
@@ -35,6 +39,7 @@ contract FanToEarn is ERC721 {
   mapping(uint256 => NFTLending) public nftLending;
 
   constructor(IOps _ops) ERC721("name", "symbol") {
+    owner = msg.sender;
     ops = _ops;
   }
 
@@ -161,4 +166,22 @@ contract FanToEarn is ERC721 {
   }
 
   // #endregion  ========== =============  GELATO OPS AUTOMATE CLOSING PROPOSAL  ============= ============= //
+
+  receive() external payable {
+    console.log("----- receive:", msg.value);
+  }
+
+  function withdraw() external onlyOwner returns (bool) {
+    (bool result, ) = payable(msg.sender).call{value: address(this).balance}(
+      ""
+    );
+    return result;
+  }
+
+    //Modifiers
+  modifier onlyOwner() {
+    require(msg.sender == owner, "ONLY_OWNER");
+    _;
+  }
+
 }
