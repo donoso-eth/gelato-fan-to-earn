@@ -12,6 +12,7 @@ import { join } from "path";
 import { createHardhatAndFundPrivKeysFiles } from "../helpers/localAccounts";
 import * as hre from 'hardhat';
 
+let ops = "0xc1C6805B857Bef1f412519C4A842522431aFed39"
 
 interface ICONTRACT_DEPLOY {
   artifactsPath:string,
