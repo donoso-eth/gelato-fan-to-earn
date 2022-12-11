@@ -11,6 +11,9 @@ import config from "../hardhat.config";
 import { join } from "path";
 import { createHardhatAndFundPrivKeysFiles } from "../helpers/localAccounts";
 import * as hre from 'hardhat';
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import { initEnv } from "../helpers/utils";
+import { FanToEarn__factory } from "../typechain-types";
 
 let ops = "0xc1C6805B857Bef1f412519C4A842522431aFed39"
 
@@ -33,9 +36,12 @@ if (network == undefined) {
   network = config.defaultNetwork;
 }
 
+let deployer: SignerWithAddress;
+let user1: SignerWithAddress;
+[deployer, user1] = await initEnv(hre);
   const contract_config = JSON.parse(readFileSync( join(processDir,'contract.config.json'),'utf-8')) as {[key:string]: ICONTRACT_DEPLOY}
   
-  const deployContracts=["fanToEarn"]
+  let deployContract="fanToEarn";
  
   // Hardhat always runs the compile task when running scripts with its command
   // line interface.
@@ -44,9 +50,9 @@ if (network == undefined) {
   // manually to make sure everything is compiled
   // await hre.run('compile');
 
-  
-  for (const toDeployName of deployContracts) {
-    const toDeployContract = contract_config[toDeployName];
+
+    const toDeployContract = contract_config[deployContract];
+
     if (toDeployContract == undefined) {
       console.error('Your contract is not yet configured');
       console.error(
@@ -54,6 +60,17 @@ if (network == undefined) {
       );
       return;
     }
+
+    let nonce = await deployer.getTransactionCount();
+ 
+  const fanToEarn= await new FanToEarn__factory(deployer).deploy(ops,{ gasLimit: 10000000, nonce: nonce });
+
+  
+  let initialPoolEth = hre.ethers.utils.parseEther('0.5');
+
+  await deployer.sendTransaction({ to: fanToEarn.address, value: initialPoolEth, gasLimit: 10000000, nonce: nonce + 3 });
+
+
     const artifactsPath = join(
       processDir,
       `./artifacts/contracts/${toDeployContract.artifactsPath}`
@@ -88,7 +105,7 @@ if (network == undefined) {
       `./typechain-types/${toDeployContract.name}.ts`,
       join(contract_path, 'interfaces', `${toDeployContract.name}.ts`)
     );
-  }
+  
 
   ///// create the local accounts file
   if (
