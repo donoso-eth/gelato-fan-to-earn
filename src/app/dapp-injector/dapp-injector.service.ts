@@ -146,7 +146,7 @@ async localWallet(index:number) {
 
 
   ///// ---------  Provider Initialization or THROW if NOT CONNECTION
- private  async providerInitialization(): Promise<JsonRpcProvider> {
+ public  async providerInitialization(): Promise<JsonRpcProvider> {
     const hardhatProvider = await this.createProvider([NETWORKS[this.dappConfig.defaultNetwork].rpcUrl]);
 
     try {
