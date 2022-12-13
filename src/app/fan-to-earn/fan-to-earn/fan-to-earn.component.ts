@@ -1,15 +1,9 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import {
-  AngularContract,
-  DappInjector,
-  no_network,
-  angular_web3,
-  DappBaseComponent,
-  netWorkById,
-} from 'angular-web3';
+import { AngularContract, DappInjector, DappBaseComponent } from 'angular-web3';
 import { providers } from 'ethers';
-import {  FanToEarn} from 'src/assets/contracts/interfaces/FanToEarn';
+import { doSignerTransaction } from 'src/app/dapp-injector/classes/transactor';
+import { FanToEarn } from 'src/assets/contracts/interfaces/FanToEarn';
 
 @Component({
   selector: 'fan-to-earn',
@@ -34,46 +28,45 @@ import {  FanToEarn} from 'src/assets/contracts/interfaces/FanToEarn';
     `,
   ],
 })
-export class FanToEarnComponent extends DappBaseComponent implements AfterViewInit {
-  deployer_address!: string;
-  myWallet_address!: string;
-  contractHeader!: { name: string; address: string };
+export class FanToEarnComponent
+  extends DappBaseComponent
+  implements AfterViewInit
+{
+  fanToEarn!: FanToEarn;
 
-  fanToEarn!: AngularContract<FanToEarn>;
-  netWork!: string;
-  no_network = no_network;
-  angular_web3 = angular_web3;
-  connected_netWork!: string;
-  contract_network!: string;
-  provider_network!: string;
+  ownedTokens = 0;
+  tokensListing:Array<any> = [];
 
-  constructor(
-    store: Store,
-    dapp: DappInjector
-  ) { super(dapp,store)}
+  constructor(store: Store, dapp: DappInjector) {
+    super(dapp, store);
+    console.log('ok');
+  }
 
-  async asyncStuff() {
-    this.myWallet_address = this.dapp.signerAddress!;
-    this.contractHeader = {
-      name: this.fanToEarn.name,
-      address: this.fanToEarn.address,
-    };
-    this.deployer_address = this.dapp.signerAddress!;
-    this.connected_netWork! = this.dapp.DAPP_STATE.connectedNetwork as string
-    this.contract_network = this.fanToEarn.network_deployed;
-    const net_id = (await this.dapp.provider?.getNetwork())?.chainId
-    this.provider_network = netWorkById(+net_id!).name
+  async getState() {
+    this.ownedTokens = +(await this.fanToEarn.balanceOf(
+      this.dapp.signerAddress!
+    ))!.toString();
+     
+    for(let i=1;i<= this.ownedTokens;i++){
+      let tokenId = +(await this.fanToEarn.tokenOfOwnerByIndex(this.dapp.signerAddress!,i-1)).toString();
+      let tokenObject = await this.fanToEarn.nftLending(tokenId);
+      this.tokensListing.push(tokenObject);
+    
     }
 
+    console.log(this.ownedTokens);
+  }
+
   override async hookContractConnected(): Promise<void> {
-    this.fanToEarn= this.dapp.defaultContract! ;
-   
+    this.fanToEarn = this.dapp.defaultContract?.instance!;
 
-    this.asyncStuff()
+    console.log('connected');
+    await this.getState();
   }
 
-  connect() {
-    this.dapp.launchWebModal();
+  async mint() {
+    await doSignerTransaction(
+      this.fanToEarn.safeMint(this.dapp.signerAddress!)!
+    );
   }
-
 }

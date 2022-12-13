@@ -66,7 +66,7 @@ let user1: SignerWithAddress;
   const fanToEarn= await new FanToEarn__factory(deployer).deploy(ops,{ gasLimit: 10000000, nonce: nonce });
 
   
-  let initialPoolEth = hre.ethers.utils.parseEther('0.5');
+  let initialPoolEth = hre.ethers.utils.parseEther('0.1');
 
   await deployer.sendTransaction({ to: fanToEarn.address, value: initialPoolEth, gasLimit: 10000000, nonce: nonce + 1 });
 

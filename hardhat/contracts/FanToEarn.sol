@@ -5,7 +5,7 @@ import "hardhat/console.sol";
 
 import {IOps} from "./gelato/IOps.sol";
 import {LibDataTypes} from "./gelato/LibDataTypes.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 enum NFTStatus {
   PAUSED,
@@ -20,9 +20,10 @@ struct NFTLending {
   uint256 cost;
   NFTStatus status;
   address borrower;
+  uint256 pos;
 }
 
-contract FanToEarn is ERC721 {
+contract FanToEarn is ERC721Enumerable {
 
  // owner
   address immutable owner;
@@ -34,7 +35,12 @@ contract FanToEarn is ERC721 {
   IOps public ops;
   address payable public gelato;
   address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
-  bytes32 public finishingVotingTask;
+
+  /// FAN TO EARN
+
+  uint256 public nrNftsListed;
+
+  uint256[] public nftsListed;
 
   mapping(uint256 => NFTLending) public nftLending;
 
@@ -56,14 +62,28 @@ contract FanToEarn is ERC721 {
       duration,
       cost,
       NFTStatus.LISTED,
-      address(0)
+      address(0),
+      nrNftsListed
     );
+
+    nftsListed.push(_tokenId);
+    nrNftsListed++;
+
   }
 
   function removeListing(
     uint256 _tokenId
   ) external onlyTokenOwner(_tokenId) onlyListed(_tokenId) {
     nftLending[_tokenId].status = NFTStatus.PAUSED;
+    uint256 posOld = nftLending[_tokenId].pos;
+
+    uint256 replaceTokenId = nrNftsListed;
+    nftLending[replaceTokenId].pos = posOld;
+    nftsListed[posOld] = replaceTokenId;
+
+    nftsListed.pop();
+    nrNftsListed--;
+
   }
 
   function borrowNft(uint256 _tokenId) external payable {
@@ -101,10 +121,10 @@ contract FanToEarn is ERC721 {
 
   // #region  ========== =============  ERC721  ============= ============= //
   function _beforeTokenTransfer(
-    address,
-    address,
+    address from,
+    address to,
     uint256 _tokenId,
-    uint256
+    uint256 batchSize
   ) internal override {
     require(
       nftLending[_tokenId].status != NFTStatus.BORROWED,
@@ -112,11 +132,13 @@ contract FanToEarn is ERC721 {
     );
 
     nftLending[_tokenId].status = NFTStatus.PAUSED;
+    super._beforeTokenTransfer(from, to, _tokenId, batchSize);
   }
 
   function safeMint(address to) external {
     tokenId++;
     _safeMint(to, tokenId, "0x");
+      nftLending[tokenId].id  = tokenId;
   }
 
   // #endregion  ========== =============  ERC721  ============= ============= //

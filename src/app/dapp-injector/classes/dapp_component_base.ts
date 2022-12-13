@@ -14,7 +14,9 @@ export class DappBaseComponent implements OnDestroy, AfterViewInit {
 
   ////// Public Available
   blockchain_is_busy: boolean = true;
+  is_busy_message = { header: '', body: '' };
   blockchain_status: NETWORK_STATUS = 'loading';
+
 
   defaultContract!: AngularContract< FanToEarn>;
 
@@ -45,7 +47,7 @@ export class DappBaseComponent implements OnDestroy, AfterViewInit {
       .pipe(takeUntil(this.destroyHooks))
       .subscribe(async (value) => {
         this.blockchain_status = value;
-        console.log(value);
+       
       });
 
     //////  CHAIN START LOADING
@@ -94,10 +96,21 @@ export class DappBaseComponent implements OnDestroy, AfterViewInit {
 
     //////////  APP IS BUSY   ///////////////////
     this.store
-      .select(web3Selectors.isNetworkBusy)
+      .select(web3Selectors.busyNetwork)
       .pipe(takeUntil(this.destroyHooks))
       .subscribe((isBusy: boolean) => {
         this.blockchain_is_busy = isBusy;
+        if (isBusy == false) {
+          this.is_busy_message = { header:'', body:''}
+        }
+      });
+
+      this.store
+      .select(web3Selectors.busyNetworkWithMessage)
+      .pipe(takeUntil(this.destroyHooks))
+      .subscribe((payload:{header:string, body:string}) => {
+     
+        this.is_busy_message = payload;
       });
   }
 

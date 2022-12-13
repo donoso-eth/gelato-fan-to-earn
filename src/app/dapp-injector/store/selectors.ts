@@ -74,10 +74,17 @@ const hookRefreshBalances = pipe(
 
 
 
-const isNetworkBusy = createSelector(
+const busyNetwork = createSelector(
   selectWeb3State,
-  (state: Web3State) => state.isNetworkBusy
+  (state: Web3State) => state.busyNetwork
 );
+
+
+const busyNetworkWithMessage = createSelector(
+  selectWeb3State,
+  (state: Web3State) => (state.busyMessage)
+);
+
 
 
 const selectSignerNetwork = createSelector(
@@ -110,8 +117,8 @@ export const web3Selectors = {
   hookForceDisconnect,
   hookRefreshBalances,
 
-  isNetworkBusy,
-
+  busyNetwork,
+  busyNetworkWithMessage,
   
   selectSignerNetwork,
   selectWalletBalance,

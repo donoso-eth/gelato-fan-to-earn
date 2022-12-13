@@ -24,13 +24,14 @@ export interface FanToEarnInterface extends utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "borrowNft(uint256)": FunctionFragment;
-    "finishingVotingTask()": FunctionFragment;
     "gelato()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "listToken(uint256,uint256,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "nftLending(uint256)": FunctionFragment;
+    "nftsListed(uint256)": FunctionFragment;
+    "nrNftsListed()": FunctionFragment;
     "ops()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
     "removeListing(uint256)": FunctionFragment;
@@ -40,7 +41,10 @@ export interface FanToEarnInterface extends utils.Interface {
     "setApprovalForAll(address,bool)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
+    "tokenByIndex(uint256)": FunctionFragment;
+    "tokenOfOwnerByIndex(address,uint256)": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
+    "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "withdraw()": FunctionFragment;
   };
@@ -54,10 +58,6 @@ export interface FanToEarnInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "borrowNft",
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "finishingVotingTask",
-    values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "gelato", values?: undefined): string;
   encodeFunctionData(
@@ -76,6 +76,14 @@ export interface FanToEarnInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "nftLending",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "nftsListed",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "nrNftsListed",
+    values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "ops", values?: undefined): string;
   encodeFunctionData(
@@ -105,8 +113,20 @@ export interface FanToEarnInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "tokenByIndex",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tokenOfOwnerByIndex",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "tokenURI",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "totalSupply",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "transferFrom",
@@ -118,10 +138,6 @@ export interface FanToEarnInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "borrowNft", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "finishingVotingTask",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "gelato", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
@@ -134,6 +150,11 @@ export interface FanToEarnInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "listToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nftLending", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "nftsListed", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "nrNftsListed",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "ops", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
   decodeFunctionResult(
@@ -155,7 +176,19 @@ export interface FanToEarnInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "tokenByIndex",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "tokenOfOwnerByIndex",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "totalSupply",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "transferFrom",
     data: BytesLike
@@ -236,8 +269,6 @@ export interface FanToEarn extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    finishingVotingTask(overrides?: CallOverrides): Promise<[string]>;
-
     gelato(overrides?: CallOverrides): Promise<[string]>;
 
     getApproved(
@@ -264,15 +295,31 @@ export interface FanToEarn extends BaseContract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
-      [BigNumber, BigNumber, BigNumber, BigNumber, number, string] & {
+      [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        number,
+        string,
+        BigNumber
+      ] & {
         id: BigNumber;
         start: BigNumber;
         duration: BigNumber;
         cost: BigNumber;
         status: number;
         borrower: string;
+        pos: BigNumber;
       }
     >;
+
+    nftsListed(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    nrNftsListed(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     ops(overrides?: CallOverrides): Promise<[string]>;
 
@@ -325,10 +372,23 @@ export interface FanToEarn extends BaseContract {
 
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
+    tokenByIndex(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    tokenOfOwnerByIndex(
+      owner: string,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     tokenURI(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     transferFrom(
       from: string,
@@ -357,8 +417,6 @@ export interface FanToEarn extends BaseContract {
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  finishingVotingTask(overrides?: CallOverrides): Promise<string>;
-
   gelato(overrides?: CallOverrides): Promise<string>;
 
   getApproved(
@@ -385,15 +443,20 @@ export interface FanToEarn extends BaseContract {
     arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<
-    [BigNumber, BigNumber, BigNumber, BigNumber, number, string] & {
+    [BigNumber, BigNumber, BigNumber, BigNumber, number, string, BigNumber] & {
       id: BigNumber;
       start: BigNumber;
       duration: BigNumber;
       cost: BigNumber;
       status: number;
       borrower: string;
+      pos: BigNumber;
     }
   >;
+
+  nftsListed(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+  nrNftsListed(overrides?: CallOverrides): Promise<BigNumber>;
 
   ops(overrides?: CallOverrides): Promise<string>;
 
@@ -443,7 +506,20 @@ export interface FanToEarn extends BaseContract {
 
   symbol(overrides?: CallOverrides): Promise<string>;
 
+  tokenByIndex(
+    index: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  tokenOfOwnerByIndex(
+    owner: string,
+    index: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+  totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
   transferFrom(
     from: string,
@@ -468,8 +544,6 @@ export interface FanToEarn extends BaseContract {
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     borrowNft(_tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
-
-    finishingVotingTask(overrides?: CallOverrides): Promise<string>;
 
     gelato(overrides?: CallOverrides): Promise<string>;
 
@@ -497,15 +571,31 @@ export interface FanToEarn extends BaseContract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
-      [BigNumber, BigNumber, BigNumber, BigNumber, number, string] & {
+      [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        number,
+        string,
+        BigNumber
+      ] & {
         id: BigNumber;
         start: BigNumber;
         duration: BigNumber;
         cost: BigNumber;
         status: number;
         borrower: string;
+        pos: BigNumber;
       }
     >;
+
+    nftsListed(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    nrNftsListed(overrides?: CallOverrides): Promise<BigNumber>;
 
     ops(overrides?: CallOverrides): Promise<string>;
 
@@ -552,7 +642,20 @@ export interface FanToEarn extends BaseContract {
 
     symbol(overrides?: CallOverrides): Promise<string>;
 
+    tokenByIndex(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    tokenOfOwnerByIndex(
+      owner: string,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferFrom(
       from: string,
@@ -615,8 +718,6 @@ export interface FanToEarn extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    finishingVotingTask(overrides?: CallOverrides): Promise<BigNumber>;
-
     gelato(overrides?: CallOverrides): Promise<BigNumber>;
 
     getApproved(
@@ -643,6 +744,13 @@ export interface FanToEarn extends BaseContract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    nftsListed(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    nrNftsListed(overrides?: CallOverrides): Promise<BigNumber>;
 
     ops(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -695,10 +803,23 @@ export interface FanToEarn extends BaseContract {
 
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
+    tokenByIndex(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    tokenOfOwnerByIndex(
+      owner: string,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     tokenURI(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferFrom(
       from: string,
@@ -731,10 +852,6 @@ export interface FanToEarn extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    finishingVotingTask(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     gelato(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getApproved(
@@ -761,6 +878,13 @@ export interface FanToEarn extends BaseContract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    nftsListed(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    nrNftsListed(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     ops(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -813,10 +937,23 @@ export interface FanToEarn extends BaseContract {
 
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    tokenByIndex(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    tokenOfOwnerByIndex(
+      owner: string,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     tokenURI(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferFrom(
       from: string,

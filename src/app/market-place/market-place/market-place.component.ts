@@ -41,8 +41,9 @@ export class MarketPlaceComponent extends DappBaseComponent {
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
 
 
+    
 
-
+    this.store.dispatch(Web3Actions.chainBusy({ status: false}));
   }
 
   async instantiateReadContract() {

@@ -10,7 +10,8 @@ import { Web3State } from './models';
 
 export const initialState: Web3State = {
   chainStatus:'loading',
-  isNetworkBusy:true,
+  busyNetwork:true,
+  busyMessage: { header:'', body:''},
   signerNetwork:'',
   readContactReady:false,
   etherToDollar:0,
@@ -24,8 +25,8 @@ export const web3FeatureKey = 'web3';
 const web3dReducer = createReducer(
   initialState,
   on(web3Actions.Web3Actions.chainStatus, (state,{status}) => ({ ...state,chainStatus:status})),
-  on(web3Actions.Web3Actions.chainBusy, (state,{status}) => ({ ...state, isNetworkBusy:status})),
-
+  on(web3Actions.Web3Actions.chainBusy, (state,{status}) => ({ ...state, busyNetwork:status})),
+  on(web3Actions.Web3Actions.chainBusyWithMessage, (state,{message}) => ({ ...state, busyMessage:message})), 
   on(web3Actions.Web3Actions.disconnectChain, (state) => ({ ...state,chainStatus:'force-disconnect'})),
 
   on(web3Actions.Web3Actions.refreshBalances, (state,{refreshBalance}) => ({ ...state,refreshBalance:refreshBalance })),

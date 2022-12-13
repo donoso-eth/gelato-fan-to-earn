@@ -1,17 +1,18 @@
 export interface Web3State {
-    chainStatus: NETWORK_STATUS;
-    isNetworkBusy:boolean;
-    readContactReady:boolean
-    signerNetwork:string;
+  chainStatus: NETWORK_STATUS;
+  busyNetwork:boolean;
+  busyMessage: { header:string, body:string},
 
-    //
-    walletBalance:number;
-    etherToDollar:number;
+  readContactReady:boolean
+  signerNetwork:string;
 
-    refreshBalance:boolean;
-    
-  }
+  //
+  walletBalance:number;
+  etherToDollar:number;
 
-  export type NETWORK_STATUS = 'loading' | 'fail-to-connect-network' | 'wallet-not-connected' | 'wallet-connected' | 'disconnected' | 'force-disconnect';
-
+  refreshBalance:boolean;
   
+}
+
+export type NETWORK_STATUS = 'loading' | 'fail-to-connect-network' | 'wallet-not-connected' | 'wallet-connected' | 'disconnected' | 'force-disconnect';
+

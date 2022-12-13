@@ -32,6 +32,7 @@ export async function initEnv(hre: HardhatRuntimeEnvironment): Promise<any[]> {
     const user2 = accounts[2];
     const user3 = accounts[3];
     const user4 = accounts[4];
+    console.log(deployer.address)
 
     return [deployer, user1, user2, user3, user4];
   } else {
