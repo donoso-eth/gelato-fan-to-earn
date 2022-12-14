@@ -23,6 +23,7 @@ struct NFTLending {
   address owner;
   uint256 pos;
   bytes name;
+  bytes32 returnTaskId;
 }
 
 
@@ -93,15 +94,16 @@ contract FanToEarn is ERC721Enumerable {
   function borrowNft(uint256 _tokenId, uint256 duration) external payable {
     NFTLending memory nft = nftLending[_tokenId];
 
-    console.log(msg.value);
+
     require(nft.owner != msg.sender, "OWNER_OF_THE_NFT");
     require(msg.value >= nft.cost * duration, "NOT_ENOUGH_ETH_SENT");
 
     _safeTransfer(_ownerOf(_tokenId),msg.sender,_tokenId,"0x");
     nftLending[_tokenId].status = NFTStatus.BORROWED;
+    nftLending[_tokenId].borrower = msg.sender;
 
 
-    _createReturnNftTaksk(_tokenId,nft.duration, msg.sender);
+    nftLending[_tokenId].returnTaskId =_createReturnNftTaksk(_tokenId,nft.duration);
     (bool success, ) = payable(_ownerOf(_tokenId)).call{value: msg.value}("");
     require(success, "_transfer: ETH transfer failed");
 
@@ -173,14 +175,14 @@ contract FanToEarn is ERC721Enumerable {
   // #region  ========== =============  GELATO OPS AUTOMATE CLOSING PROPOSAL  ============= ============= //
 
   //@dev creating the  gelato task
-  function _createReturnNftTaksk(uint256 _tokenId, uint256 duration, address _borrower) internal returns (bytes32 taskId) {
+  function _createReturnNftTaksk(uint256 _tokenId, uint256 duration) internal returns (bytes32 taskId) {
     bytes memory timeArgs = abi.encode(
       uint128(block.timestamp + duration),
       duration
     );
 
     //@dev executing function encoded
-    bytes memory execData = abi.encodeWithSelector(this.returnNft.selector,_tokenId,_borrower);
+    bytes memory execData = abi.encodeWithSelector(this.returnNft.selector,_tokenId);
     LibDataTypes.Module[] memory modules = new LibDataTypes.Module[](2);
     //@dev using execution prefixed at a certain interval and soing only one execution
     modules[0] = LibDataTypes.Module.TIME;
@@ -196,7 +198,7 @@ contract FanToEarn is ERC721Enumerable {
   }
 
   //@dev executing function to be called by Gelato
-  function returnNft(uint256 _tokenId, address _borrower) public onlyOps {
+  function returnNft(uint256 _tokenId) public onlyOps {
     nftLending[_tokenId].status = NFTStatus.LISTED;
     _safeTransfer(_ownerOf(_tokenId),nftLending[_tokenId].owner,_tokenId,"0x");
 
@@ -211,6 +213,7 @@ contract FanToEarn is ERC721Enumerable {
       }
     }
 
+     nftLending[_tokenId].returnTaskId = bytes32(0);
 
     lentByUser.lents[foundIdPos] = lentByUser.lents[lentByUser.nrLent -1];
     lentByUser.lents.pop();

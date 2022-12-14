@@ -4,9 +4,17 @@
 <span style="font-weight:bold;background-image: linear-gradient(90deg,#f5c3a6,#b45f63);-webkit-background-clip: text;color:transparent">{{status}}</span>
 <br>
 <div style="height:20px">
-<div *ngIf="status == 'LISTED'">
+<div  >
     <span>{{cost}} ETH/day</span>
     <br>
+</div>
+<div *ngIf="status == 'BORROWED'">
+  <div *ngIf="route == 'ACCOUNT'">
+  <span *ngIf="signerAddress.toLowerCase() == nft.owner.toLowerCase()"> to {{displayAddress(nft.borrower)}}</span>
+  <span *ngIf="signerAddress.toLowerCase() != nft.owner.toLowerCase()"> from {{displayAddress(nft.owner)}}</span>
+</div>
+  <br>
+  <br>
 </div>
 </div>
 <button *ngIf="route == 'MARKETPLACE' && status == 'LISTED'"  (click)="borrow()"  pButton pRipple style="margin: 10px auto"

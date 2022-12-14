@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { DappBaseComponent, DappInjector, Web3Actions } from 'angular-web3';
 import { utils } from 'ethers';
 import { doSignerTransaction } from 'src/app/dapp-injector/classes/transactor';
+import { displayAdress } from 'src/app/shared/helpers/helpers';
 import { INFT } from 'src/app/shared/models/nft';
 import { FanToEarn } from 'src/assets/contracts/interfaces/FanToEarn';
 
@@ -24,11 +25,14 @@ export class NftComponent extends DappBaseComponent implements OnChanges {
 
   fanToEarn!: FanToEarn;
 
+  signerAddress!:string;
 
   constructor(dapp:DappInjector, store:Store){
     super(dapp,store)
 
   }
+
+  displayAddress = displayAdress;
 
   @Input() public nft!:INFT;
   @Output() public refreshEvent:EventEmitter<any> = new EventEmitter()
@@ -37,6 +41,9 @@ export class NftComponent extends DappBaseComponent implements OnChanges {
   @Output() public borrowEvent:EventEmitter<INFT> = new EventEmitter()
 
   ngOnChanges(): void {
+
+    this.signerAddress = this.dapp.signerAddress!;
+
     this.showListDialog = false;
 
     this.fanToEarn = this.dapp.defaultContract?.instance as FanToEarn;
