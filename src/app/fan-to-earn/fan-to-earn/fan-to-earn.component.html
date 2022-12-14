@@ -6,7 +6,7 @@
 
 
       <div style="text-align: center" class="col-12">
-        <div style="border:unset;height:330px" class="card mb-0">
+        <div style="border:unset" class="card mb-0">
 
 
           <h3>Your NFTs</h3>
@@ -14,7 +14,7 @@
           <div class="col-12">
             <div class="grid justify-content-center">
               <div *ngFor="let nft of tokensListing">
-             <nft-display [nft]="nft" ></nft-display>
+            <nft-display  (refreshEvent)="getState()" [route]="'ACCOUNT'"  [nft]="nft" ></nft-display>
               </div>
             </div>
           </div>

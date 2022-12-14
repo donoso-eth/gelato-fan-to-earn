@@ -54,6 +54,8 @@ export class FanToEarnComponent
   }
 
   async getState() {
+    this.tokensListing = [];
+
     this.ownedTokens = +(await this.fanToEarn.balanceOf(
       this.dapp.signerAddress!
     ))!.toString();
@@ -65,7 +67,7 @@ export class FanToEarnComponent
     
     }
 
-    console.log(this.ownedTokens);
+    console.log(this.tokensListing);
     this.store.dispatch(Web3Actions.chainBusy({ status: false }));
   }
 
