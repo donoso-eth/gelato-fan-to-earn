@@ -38,7 +38,7 @@ export interface FanToEarnInterface extends utils.Interface {
     "ops()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
     "removeListing(uint256)": FunctionFragment;
-    "returnNft(uint256,address)": FunctionFragment;
+    "returnNft(uint256)": FunctionFragment;
     "safeMint(address,bytes)": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
@@ -111,7 +111,7 @@ export interface FanToEarnInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "returnNft",
-    values: [BigNumberish, string]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "safeMint",
@@ -345,6 +345,7 @@ export interface FanToEarn extends BaseContract {
         string,
         string,
         BigNumber,
+        string,
         string
       ] & {
         id: BigNumber;
@@ -356,6 +357,7 @@ export interface FanToEarn extends BaseContract {
         owner: string;
         pos: BigNumber;
         name: string;
+        returnTaskId: string;
       }
     >;
 
@@ -385,7 +387,6 @@ export interface FanToEarn extends BaseContract {
 
     returnNft(
       _tokenId: BigNumberish,
-      _borrower: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -511,6 +512,7 @@ export interface FanToEarn extends BaseContract {
       string,
       string,
       BigNumber,
+      string,
       string
     ] & {
       id: BigNumber;
@@ -522,6 +524,7 @@ export interface FanToEarn extends BaseContract {
       owner: string;
       pos: BigNumber;
       name: string;
+      returnTaskId: string;
     }
   >;
 
@@ -542,7 +545,6 @@ export interface FanToEarn extends BaseContract {
 
   returnNft(
     _tokenId: BigNumberish,
-    _borrower: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -668,6 +670,7 @@ export interface FanToEarn extends BaseContract {
         string,
         string,
         BigNumber,
+        string,
         string
       ] & {
         id: BigNumber;
@@ -679,6 +682,7 @@ export interface FanToEarn extends BaseContract {
         owner: string;
         pos: BigNumber;
         name: string;
+        returnTaskId: string;
       }
     >;
 
@@ -700,11 +704,7 @@ export interface FanToEarn extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    returnNft(
-      _tokenId: BigNumberish,
-      _borrower: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    returnNft(_tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     safeMint(
       to: string,
@@ -877,7 +877,6 @@ export interface FanToEarn extends BaseContract {
 
     returnNft(
       _tokenId: BigNumberish,
-      _borrower: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1028,7 +1027,6 @@ export interface FanToEarn extends BaseContract {
 
     returnNft(
       _tokenId: BigNumberish,
-      _borrower: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

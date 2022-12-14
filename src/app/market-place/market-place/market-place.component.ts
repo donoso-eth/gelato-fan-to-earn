@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -16,7 +16,7 @@ import { doSignerTransaction } from 'src/app/dapp-injector/classes/transactor';
   templateUrl: './market-place.component.html',
   styleUrls: ['./market-place.component.scss'],
 })
-export class MarketPlaceComponent extends DappBaseComponent {
+export class MarketPlaceComponent extends DappBaseComponent implements OnInit{
   readFanToEarn!: FanToEarn;
   fanToEarn!: FanToEarn;
   listedNFTs: Array<any> = [];
@@ -36,10 +36,20 @@ export class MarketPlaceComponent extends DappBaseComponent {
   ) {
     super(dapp, store);
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    this.instantiateReadContract();
+
+  }
+  utils = utils;  
+
+  ngOnInit(): void {
+    this.initUi();
   }
 
-  utils = utils;  
+async initUi(){
+  await this.instantiateReadContract();
+  this.getState();
+}
+
+
 
   async getState() {
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
@@ -68,7 +78,7 @@ export class MarketPlaceComponent extends DappBaseComponent {
     //     console.log(taskId);
     // });
 
-    this.getState();
+   
   }
 
   async borrow(token:INFT) {
@@ -142,5 +152,6 @@ export class MarketPlaceComponent extends DappBaseComponent {
     ) as FanToEarn;
 
     this.connected = true;
+    this.instantiateReadContract();
   }
 }
