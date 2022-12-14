@@ -12,6 +12,7 @@ export interface INFT {
     cost:number,
     status:NFTStatus,
     borrower:string,
+    owner:string;
     name:string
  
 }

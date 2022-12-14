@@ -9,6 +9,9 @@
     <br>
 </div>
 </div>
+<button *ngIf="route == 'MARKETPLACE' && status == 'LISTED'"  (click)="borrow()"  pButton pRipple style="margin: 10px auto"
+type="button" label="Borrow" class="p-button-rounded mr-2 mb-2">
+</button>
 <button *ngIf="route == 'ACCOUNT' && status == 'AVAILABLE'"  (click)="list()"  pButton pRipple style="margin: 10px auto"
 type="button" label="List" class="p-button-rounded mr-2 mb-2">
 </button>

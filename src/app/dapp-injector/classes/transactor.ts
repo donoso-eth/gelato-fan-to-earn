@@ -27,7 +27,7 @@ export const doSignerTransaction = async (
         ? JSON.parse(JSON.parse(JSON.stringify(e.error)).body).error.message
         : e.data
         ? e.data
-        : JSON.stringify(e);
+        : e
     if (!e.error && e.message) {
       message = e.message;
     }

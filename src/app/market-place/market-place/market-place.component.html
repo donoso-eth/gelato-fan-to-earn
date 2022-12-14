@@ -18,9 +18,14 @@
                  
                     <div class="col-12">
                         <div class="grid justify-content-center">
-                            </div>
-                            </div>
-
+                          <div *ngFor="let nft of listedNFTs">
+                        <nft-display (borrowEvent)="borrow($event)" (refreshEvent)="getState()" [route]="'MARKETPLACE'"  [nft]="nft" ></nft-display>
+                          </div>
+                          <div *ngIf="listedNFTs.length == 0">
+                            <h4>No NFT's listed so far</h4>
+                          </div>
+                        </div>
+                      </div>
 
             
                     <!-- <p style="margin: unset">You can </p> -->
@@ -33,3 +38,43 @@
         </div>
     </div>
 </div>
+
+<p-dialog
+  header="Borrow a NFT?"
+  [(visible)]="showBorrowDialog"
+  [modal]="true"
+  showEffect="fade"
+  [style]="{ width: '50vw' }"
+  [breakpoints]="{ '960px': '80vw' }"
+>
+  <p style="margin-bottom: 5px;" class="line-height-10">
+
+  How many days you want to Borrow at 
+    <span *ngIf="toBorrowNFT !== undefined" style="font-weight: bold; color: var(--primary-color)"
+      >{{utils.formatEther(toBorrowNFT.cost)}} ETH</span
+    > per day?
+  </p>
+  <p class="">
+    <p-inputNumber
+      [formControl]="borrowAmountCtrl"
+      placeholder="Days"
+      [showButtons]="true"
+     [min]="0"
+     [step]="1"
+    >
+    </p-inputNumber>
+    <br>
+    <button
+      style="margin:20px"
+      pButton
+      icon="pi pi-check"
+      label="List"
+      (click)="doBorrow()"
+      class="p-button-outlined"
+    ></button>
+  </p>
+
+  <ng-template pTemplate="footer">
+    <!-- <button pButton icon="pi pi-check" label="Fund" class="p-button-outlined"></button> -->
+  </ng-template>
+</p-dialog>

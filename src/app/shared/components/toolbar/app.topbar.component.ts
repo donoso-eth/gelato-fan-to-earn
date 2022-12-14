@@ -41,7 +41,7 @@ export class AppTopBarComponent extends DappBaseComponent {
 
   doDisconnect() {
   
-    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
+   // this.store.dispatch(Web3Actions.chainBusy({ status: true }));
    this.store.dispatch(Web3Actions.disconnectChain({ status: 'force-disconnect' }));
   
   }

@@ -20,10 +20,16 @@ struct NFTLending {
   uint256 cost;
   NFTStatus status;
   address borrower;
+  address owner;
   uint256 pos;
   bytes name;
 }
 
+
+  struct LentByUser {
+      uint256 nrLent;
+      uint256[] lents;
+  }
 contract FanToEarn is ERC721Enumerable {
 
  // owner
@@ -45,6 +51,8 @@ contract FanToEarn is ERC721Enumerable {
 
   mapping(uint256 => NFTLending) public nftLending;
 
+  mapping(address => LentByUser) public nftLentByUser;
+
   constructor(IOps _ops) ERC721("name", "symbol") {
     owner = msg.sender;
     ops = _ops;
@@ -59,6 +67,7 @@ contract FanToEarn is ERC721Enumerable {
     nftLending[_tokenId].cost = cost;
     nftLending[_tokenId].status = NFTStatus.LISTED;
     nftLending[_tokenId].pos =  nrNftsListed;
+    nftLending[_tokenId].owner = msg.sender;
 
 
     nftsListed.push(_tokenId);
@@ -81,16 +90,27 @@ contract FanToEarn is ERC721Enumerable {
 
   }
 
-  function borrowNft(uint256 _tokenId) external payable {
-    NFTLending storage nft = nftLending[_tokenId];
+  function borrowNft(uint256 _tokenId, uint256 duration) external payable {
+    NFTLending memory nft = nftLending[_tokenId];
 
-    require(msg.value > nft.cost, "NOT_ENOUGH_ETH_SENT");
+    console.log(msg.value);
+    require(nft.owner != msg.sender, "OWNER_OF_THE_NFT");
+    require(msg.value >= nft.cost * duration, "NOT_ENOUGH_ETH_SENT");
 
     _safeTransfer(_ownerOf(_tokenId),msg.sender,_tokenId,"0x");
-    nftLending[_tokenId].status == NFTStatus.BORROWED;
+    nftLending[_tokenId].status = NFTStatus.BORROWED;
+
+
     _createReturnNftTaksk(_tokenId,nft.duration, msg.sender);
     (bool success, ) = payable(_ownerOf(_tokenId)).call{value: msg.value}("");
     require(success, "_transfer: ETH transfer failed");
+
+    //update nft's by user lent
+    LentByUser storage lentByUser = nftLentByUser[nft.owner];
+
+    lentByUser.lents.push(_tokenId);
+    lentByUser.nrLent++;
+
 
   }
 
@@ -167,7 +187,23 @@ contract FanToEarn is ERC721Enumerable {
   //@dev executing function to be called by Gelato
   function returnNft(uint256 _tokenId, address _borrower) public onlyOps {
     nftLending[_tokenId].status = NFTStatus.LISTED;
-    _safeTransfer(_ownerOf(_tokenId),_borrower,_tokenId,"0x");
+    _safeTransfer(_ownerOf(_tokenId),nftLending[_tokenId].owner,_tokenId,"0x");
+
+
+    //update nft's by user lent
+    LentByUser storage lentByUser = nftLentByUser[nftLending[_tokenId].owner];
+
+    uint256 foundIdPos;
+    for (uint256 i=0;i<lentByUser.nrLent;i++){
+      if(lentByUser.lents[i] == _tokenId){
+          foundIdPos = i;
+      }
+    }
+
+
+    lentByUser.lents[foundIdPos] = lentByUser.lents[lentByUser.nrLent -1];
+    lentByUser.lents.pop();
+    lentByUser.nrLent--;
     
   }
 

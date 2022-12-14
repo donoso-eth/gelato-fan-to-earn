@@ -91,7 +91,7 @@ export class DappBaseComponent implements OnDestroy, AfterViewInit {
       .pipe(web3Selectors.hookForceDisconnect)
       .pipe(takeUntil(this.destroyHooks))
       .subscribe(() => {
-        this.hookForceDisconnect;
+        this.hookForceDisconnect();
       });
 
     //////////  APP IS BUSY   ///////////////////

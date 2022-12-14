@@ -23,13 +23,14 @@ export interface FanToEarnInterface extends utils.Interface {
     "ETH()": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
-    "borrowNft(uint256)": FunctionFragment;
+    "borrowNft(uint256,uint256)": FunctionFragment;
     "gelato()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "listToken(uint256,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "nftLending(uint256)": FunctionFragment;
+    "nftLentByUser(address)": FunctionFragment;
     "nftsListed(uint256)": FunctionFragment;
     "nrNftsListed()": FunctionFragment;
     "ops()": FunctionFragment;
@@ -57,7 +58,7 @@ export interface FanToEarnInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(
     functionFragment: "borrowNft",
-    values: [BigNumberish]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "gelato", values?: undefined): string;
   encodeFunctionData(
@@ -76,6 +77,10 @@ export interface FanToEarnInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "nftLending",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "nftLentByUser",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "nftsListed",
@@ -153,6 +158,10 @@ export interface FanToEarnInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "listToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nftLending", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "nftLentByUser",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "nftsListed", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "nrNftsListed",
@@ -269,6 +278,7 @@ export interface FanToEarn extends BaseContract {
 
     borrowNft(
       _tokenId: BigNumberish,
+      duration: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -304,6 +314,7 @@ export interface FanToEarn extends BaseContract {
         BigNumber,
         number,
         string,
+        string,
         BigNumber,
         string
       ] & {
@@ -313,10 +324,16 @@ export interface FanToEarn extends BaseContract {
         cost: BigNumber;
         status: number;
         borrower: string;
+        owner: string;
         pos: BigNumber;
         name: string;
       }
     >;
+
+    nftLentByUser(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { nrLent: BigNumber }>;
 
     nftsListed(
       arg0: BigNumberish,
@@ -419,6 +436,7 @@ export interface FanToEarn extends BaseContract {
 
   borrowNft(
     _tokenId: BigNumberish,
+    duration: BigNumberish,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -454,6 +472,7 @@ export interface FanToEarn extends BaseContract {
       BigNumber,
       number,
       string,
+      string,
       BigNumber,
       string
     ] & {
@@ -463,10 +482,13 @@ export interface FanToEarn extends BaseContract {
       cost: BigNumber;
       status: number;
       borrower: string;
+      owner: string;
       pos: BigNumber;
       name: string;
     }
   >;
+
+  nftLentByUser(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   nftsListed(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -558,7 +580,11 @@ export interface FanToEarn extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    borrowNft(_tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    borrowNft(
+      _tokenId: BigNumberish,
+      duration: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     gelato(overrides?: CallOverrides): Promise<string>;
 
@@ -592,6 +618,7 @@ export interface FanToEarn extends BaseContract {
         BigNumber,
         number,
         string,
+        string,
         BigNumber,
         string
       ] & {
@@ -601,10 +628,13 @@ export interface FanToEarn extends BaseContract {
         cost: BigNumber;
         status: number;
         borrower: string;
+        owner: string;
         pos: BigNumber;
         name: string;
       }
     >;
+
+    nftLentByUser(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     nftsListed(
       arg0: BigNumberish,
@@ -735,6 +765,7 @@ export interface FanToEarn extends BaseContract {
 
     borrowNft(
       _tokenId: BigNumberish,
+      duration: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -763,6 +794,8 @@ export interface FanToEarn extends BaseContract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    nftLentByUser(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     nftsListed(
       arg0: BigNumberish,
@@ -869,6 +902,7 @@ export interface FanToEarn extends BaseContract {
 
     borrowNft(
       _tokenId: BigNumberish,
+      duration: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -895,6 +929,11 @@ export interface FanToEarn extends BaseContract {
 
     nftLending(
       arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    nftLentByUser(
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

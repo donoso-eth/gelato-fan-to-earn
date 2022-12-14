@@ -14,8 +14,6 @@ import { FanToEarn } from 'src/assets/contracts/interfaces/FanToEarn';
 })
 export class NftComponent extends DappBaseComponent implements OnChanges {
 
-  
-
   showListDialog = false;
 
   name:string = '';
@@ -26,6 +24,7 @@ export class NftComponent extends DappBaseComponent implements OnChanges {
 
   fanToEarn!: FanToEarn;
 
+
   constructor(dapp:DappInjector, store:Store){
     super(dapp,store)
 
@@ -34,6 +33,8 @@ export class NftComponent extends DappBaseComponent implements OnChanges {
   @Input() public nft!:INFT;
   @Output() public refreshEvent:EventEmitter<any> = new EventEmitter()
   @Input() public route!: 'MARKETPLACE' | 'ACCOUNT';
+
+  @Output() public borrowEvent:EventEmitter<INFT> = new EventEmitter()
 
   ngOnChanges(): void {
     this.showListDialog = false;
@@ -58,14 +59,8 @@ export class NftComponent extends DappBaseComponent implements OnChanges {
   async removeList() {
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     this.store.dispatch(Web3Actions.chainBusyWithMessage({message: {body:'Removing your NFT ', header:'Please Wait'}}))
-
- 
-
     await doSignerTransaction(this.fanToEarn.removeListing(this.nft.id));
-
-
     this.refreshEvent.emit();
-
   }
 
   async doList(){
@@ -89,7 +84,9 @@ export class NftComponent extends DappBaseComponent implements OnChanges {
 
 
 
-  
+  borrow() {
+    this.borrowEvent.emit(this.nft)
+  }
 
 
 }
