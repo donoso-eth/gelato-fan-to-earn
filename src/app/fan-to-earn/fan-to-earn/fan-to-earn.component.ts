@@ -1,7 +1,8 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { AngularContract, DappInjector, DappBaseComponent } from 'angular-web3';
-import { providers } from 'ethers';
+import { AngularContract, DappInjector, DappBaseComponent, Web3Actions } from 'angular-web3';
+import { providers, utils } from 'ethers';
 import { doSignerTransaction } from 'src/app/dapp-injector/classes/transactor';
 import { FanToEarn } from 'src/assets/contracts/interfaces/FanToEarn';
 
@@ -32,14 +33,24 @@ export class FanToEarnComponent
   extends DappBaseComponent
   implements AfterViewInit
 {
+  nftType = [
+    { name: 'Private Sale',  id: 0 },
+    { name: '50% Discount',  id: 1 },
+    { name: 'Premiun BackStage',  id: 2 },
+  ];
+  
+  nftTypeCtrl: FormControl = new FormControl('',Validators.required)
+
   fanToEarn!: FanToEarn;
+
+
 
   ownedTokens = 0;
   tokensListing:Array<any> = [];
 
   constructor(store: Store, dapp: DappInjector) {
     super(dapp, store);
-    console.log('ok');
+    this.nftTypeCtrl.setValue({ name: 'Private Sale',   id: 0 })
   }
 
   async getState() {
@@ -55,6 +66,7 @@ export class FanToEarnComponent
     }
 
     console.log(this.ownedTokens);
+    this.store.dispatch(Web3Actions.chainBusy({ status: false }));
   }
 
   override async hookContractConnected(): Promise<void> {
@@ -65,8 +77,18 @@ export class FanToEarnComponent
   }
 
   async mint() {
-    await doSignerTransaction(
-      this.fanToEarn.safeMint(this.dapp.signerAddress!)!
+    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
+    this.store.dispatch(Web3Actions.chainBusyWithMessage({message: {body:'Minting your NFT ', header:'Please Wait'}}))
+ 
+    let abiCoder = new utils.AbiCoder();
+    let payload = abiCoder.encode(
+      ['string'],
+      [this.nftTypeCtrl.value.name]
     );
+    await doSignerTransaction(
+      this.fanToEarn.safeMint(this.dapp.signerAddress!, payload)!
+    );
+ 
+    this.getState()
   }
 }

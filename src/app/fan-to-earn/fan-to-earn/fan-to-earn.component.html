@@ -13,15 +13,30 @@
 
           <div class="col-12">
             <div class="grid justify-content-center">
-              <div *ngFor="let token of tokensListing">
-                {{token.id}}  
+              <div *ngFor="let nft of tokensListing">
+             <nft-display [nft]="nft" ></nft-display>
               </div>
             </div>
           </div>
 
           <p-divider></p-divider>
-          <p>As We are testing....you can mint your NFT</p>
-          <button (click)="mint()"  pButton pRipple style="margin: auto"
+          <p style="margin:20px"> As We are testing....you can mint your NFT</p>
+          <p-dropdown 
+          [options]="nftType"
+          [formControl]="nftTypeCtrl"
+          placeholder="Select NFT Type"
+        >
+          <ng-template pTemplate="selectedItem">
+            <span>{{
+              nftTypeCtrl.value.name
+            }}</span>
+          </ng-template>
+          <ng-template let-nft pTemplate="nft">
+            <span>{{ nft.name }}</span>
+          </ng-template>
+        </p-dropdown>
+        <br>
+          <button [disabled]="nftTypeCtrl.invalid" (click)="mint()"  pButton pRipple style="margin:20px  auto"
             type="button" label="Mint" class="p-button-rounded mr-2 mb-2">
           </button>
         </div>

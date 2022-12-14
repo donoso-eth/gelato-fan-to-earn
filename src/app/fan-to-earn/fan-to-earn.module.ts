@@ -5,6 +5,9 @@ import { FanToEarnRoutingModule } from './fan-to-earn-routing.module';
 
 import {DividerModule} from 'primeng/divider';
 import { ButtonModule } from 'primeng/button';
+import { NftModule } from '../shared/components/nft/nft.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DropdownModule } from 'primeng/dropdown';
 
 
 
@@ -14,9 +17,13 @@ import { ButtonModule } from 'primeng/button';
   ],
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     FanToEarnRoutingModule,
+    NftModule,
     DividerModule,
-    ButtonModule
+    ButtonModule,
+    DropdownModule,
   ],
   exports: [
     FanToEarnComponent,

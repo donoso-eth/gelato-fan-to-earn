@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NftComponent } from './nft/nft.component';
+import { ButtonModule } from 'primeng/button';
 
 
 
@@ -9,7 +10,8 @@ import { NftComponent } from './nft/nft.component';
     NftComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    ButtonModule
   ],
   exports: [
     NftComponent

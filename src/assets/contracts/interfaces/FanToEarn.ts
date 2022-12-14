@@ -27,7 +27,7 @@ export interface FanToEarnInterface extends utils.Interface {
     "gelato()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "listToken(uint256,uint256,uint256)": FunctionFragment;
+    "listToken(uint256,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "nftLending(uint256)": FunctionFragment;
     "nftsListed(uint256)": FunctionFragment;
@@ -36,7 +36,7 @@ export interface FanToEarnInterface extends utils.Interface {
     "ownerOf(uint256)": FunctionFragment;
     "removeListing(uint256)": FunctionFragment;
     "returnNft(uint256,address)": FunctionFragment;
-    "safeMint(address)": FunctionFragment;
+    "safeMint(address,bytes)": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
@@ -70,7 +70,7 @@ export interface FanToEarnInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "listToken",
-    values: [BigNumberish, BigNumberish, BigNumberish]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(
@@ -98,7 +98,10 @@ export interface FanToEarnInterface extends utils.Interface {
     functionFragment: "returnNft",
     values: [BigNumberish, string]
   ): string;
-  encodeFunctionData(functionFragment: "safeMint", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "safeMint",
+    values: [string, BytesLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "safeTransferFrom",
     values: [string, string, BigNumberish]
@@ -285,7 +288,6 @@ export interface FanToEarn extends BaseContract {
     listToken(
       _tokenId: BigNumberish,
       cost: BigNumberish,
-      duration: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -302,7 +304,8 @@ export interface FanToEarn extends BaseContract {
         BigNumber,
         number,
         string,
-        BigNumber
+        BigNumber,
+        string
       ] & {
         id: BigNumber;
         start: BigNumber;
@@ -311,6 +314,7 @@ export interface FanToEarn extends BaseContract {
         status: number;
         borrower: string;
         pos: BigNumber;
+        name: string;
       }
     >;
 
@@ -341,6 +345,7 @@ export interface FanToEarn extends BaseContract {
 
     safeMint(
       to: string,
+      name: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -433,7 +438,6 @@ export interface FanToEarn extends BaseContract {
   listToken(
     _tokenId: BigNumberish,
     cost: BigNumberish,
-    duration: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -443,7 +447,16 @@ export interface FanToEarn extends BaseContract {
     arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<
-    [BigNumber, BigNumber, BigNumber, BigNumber, number, string, BigNumber] & {
+    [
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      number,
+      string,
+      BigNumber,
+      string
+    ] & {
       id: BigNumber;
       start: BigNumber;
       duration: BigNumber;
@@ -451,6 +464,7 @@ export interface FanToEarn extends BaseContract {
       status: number;
       borrower: string;
       pos: BigNumber;
+      name: string;
     }
   >;
 
@@ -475,6 +489,7 @@ export interface FanToEarn extends BaseContract {
 
   safeMint(
     to: string,
+    name: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -561,7 +576,6 @@ export interface FanToEarn extends BaseContract {
     listToken(
       _tokenId: BigNumberish,
       cost: BigNumberish,
-      duration: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -578,7 +592,8 @@ export interface FanToEarn extends BaseContract {
         BigNumber,
         number,
         string,
-        BigNumber
+        BigNumber,
+        string
       ] & {
         id: BigNumber;
         start: BigNumber;
@@ -587,6 +602,7 @@ export interface FanToEarn extends BaseContract {
         status: number;
         borrower: string;
         pos: BigNumber;
+        name: string;
       }
     >;
 
@@ -612,7 +628,11 @@ export interface FanToEarn extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    safeMint(to: string, overrides?: CallOverrides): Promise<void>;
+    safeMint(
+      to: string,
+      name: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -734,7 +754,6 @@ export interface FanToEarn extends BaseContract {
     listToken(
       _tokenId: BigNumberish,
       cost: BigNumberish,
-      duration: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -772,6 +791,7 @@ export interface FanToEarn extends BaseContract {
 
     safeMint(
       to: string,
+      name: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -868,7 +888,6 @@ export interface FanToEarn extends BaseContract {
     listToken(
       _tokenId: BigNumberish,
       cost: BigNumberish,
-      duration: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -906,6 +925,7 @@ export interface FanToEarn extends BaseContract {
 
     safeMint(
       to: string,
+      name: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

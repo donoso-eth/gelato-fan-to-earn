@@ -21,6 +21,7 @@ struct NFTLending {
   NFTStatus status;
   address borrower;
   uint256 pos;
+  bytes name;
 }
 
 contract FanToEarn is ERC721Enumerable {
@@ -53,18 +54,12 @@ contract FanToEarn is ERC721Enumerable {
 
   function listToken(
     uint256 _tokenId,
-    uint256 cost,
-    uint256 duration
+    uint256 cost
   ) external onlyPaused(_tokenId) onlyTokenOwner(_tokenId) {
-    nftLending[_tokenId] = NFTLending(
-      _tokenId,
-      0,
-      duration,
-      cost,
-      NFTStatus.LISTED,
-      address(0),
-      nrNftsListed
-    );
+    nftLending[_tokenId].cost = cost;
+    nftLending[_tokenId].status = NFTStatus.LISTED;
+    nftLending[_tokenId].pos =  nrNftsListed;
+
 
     nftsListed.push(_tokenId);
     nrNftsListed++;
@@ -135,10 +130,11 @@ contract FanToEarn is ERC721Enumerable {
     super._beforeTokenTransfer(from, to, _tokenId, batchSize);
   }
 
-  function safeMint(address to) external {
+  function safeMint(address to, bytes memory name) external {
     tokenId++;
     _safeMint(to, tokenId, "0x");
       nftLending[tokenId].id  = tokenId;
+      nftLending[tokenId].name  = name;
   }
 
   // #endregion  ========== =============  ERC721  ============= ============= //

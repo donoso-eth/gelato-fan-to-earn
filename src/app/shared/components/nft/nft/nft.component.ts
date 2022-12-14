@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { INFT } from 'src/app/shared/models/nft';
 
 @Component({
   selector: 'nft-display',
@@ -6,5 +7,15 @@ import { Component } from '@angular/core';
   styleUrls: ['./nft.component.scss']
 })
 export class NftComponent {
+
+  constructor(){
+
+  }
+
+  list(){
+    
+  }
+
+  @Input() public nft!:INFT;
 
 }
