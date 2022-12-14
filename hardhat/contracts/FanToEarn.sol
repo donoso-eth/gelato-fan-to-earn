@@ -114,10 +114,21 @@ contract FanToEarn is ERC721Enumerable {
 
   }
 
+
+  function getTokensLent(address lendner) view external returns(uint256){
+    return nftLentByUser[lendner].nrLent;
+  }
+
+  function getTokensIdByPos(address lendner, uint256 pos) view external returns(uint256) {
+    return nftLentByUser[lendner].lents[pos];
+  }
+
+
+
   modifier onlyPaused(uint256 _tokenId) {
     require(
       nftLending[_tokenId].status == NFTStatus.PAUSED,
-      "NFT_NOT_LISTINGABLE"
+      "NFT_NOT_LISTING_READY"
     );
     _;
   }

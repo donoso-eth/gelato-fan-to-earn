@@ -26,6 +26,8 @@ export interface FanToEarnInterface extends utils.Interface {
     "borrowNft(uint256,uint256)": FunctionFragment;
     "gelato()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "getTokensIdByPos(address,uint256)": FunctionFragment;
+    "getTokensLent(address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "listToken(uint256,uint256)": FunctionFragment;
     "name()": FunctionFragment;
@@ -64,6 +66,14 @@ export interface FanToEarnInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTokensIdByPos",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTokensLent",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
@@ -149,6 +159,14 @@ export interface FanToEarnInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "gelato", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTokensIdByPos",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTokensLent",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -288,6 +306,17 @@ export interface FanToEarn extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    getTokensIdByPos(
+      lendner: string,
+      pos: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    getTokensLent(
+      lendner: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     isApprovedForAll(
       owner: string,
@@ -447,6 +476,14 @@ export interface FanToEarn extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  getTokensIdByPos(
+    lendner: string,
+    pos: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  getTokensLent(lendner: string, overrides?: CallOverrides): Promise<BigNumber>;
+
   isApprovedForAll(
     owner: string,
     operator: string,
@@ -592,6 +629,17 @@ export interface FanToEarn extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    getTokensIdByPos(
+      lendner: string,
+      pos: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getTokensLent(
+      lendner: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     isApprovedForAll(
       owner: string,
@@ -776,6 +824,17 @@ export interface FanToEarn extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getTokensIdByPos(
+      lendner: string,
+      pos: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getTokensLent(
+      lendner: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -910,6 +969,17 @@ export interface FanToEarn extends BaseContract {
 
     getApproved(
       tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getTokensIdByPos(
+      lendner: string,
+      pos: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getTokensLent(
+      lendner: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

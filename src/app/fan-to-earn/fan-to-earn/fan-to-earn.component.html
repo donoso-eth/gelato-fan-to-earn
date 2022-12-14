@@ -19,6 +19,16 @@
             </div>
           </div>
 
+          <h3>Your Lent NFTs</h3>
+
+          <div class="col-12">
+            <div class="grid justify-content-center">
+              <div *ngFor="let nft of tokensLent">
+            <nft-display  (refreshEvent)="getState()" [route]="'ACCOUNT'"  [nft]="nft" ></nft-display>
+              </div>
+            </div>
+          </div>
+
           <p-divider></p-divider>
           <p style="margin:20px"> As We are testing....you can mint your NFT</p>
           <p-dropdown 

@@ -47,6 +47,7 @@ export class FanToEarnComponent
 
   ownedTokens = 0;
   tokensListing:Array<any> = [];
+  tokensLent:Array<any> = [];
 
   constructor(store: Store, dapp: DappInjector) {
     super(dapp, store);
@@ -55,7 +56,9 @@ export class FanToEarnComponent
 
   async getState() {
     this.tokensListing = [];
+    this.tokensLent = [];
 
+    ///// get Tokens balanceOf() including borrowed and owned less lent (already in anoher wallet);
     this.ownedTokens = +(await this.fanToEarn.balanceOf(
       this.dapp.signerAddress!
     ))!.toString();
@@ -67,7 +70,19 @@ export class FanToEarnComponent
     
     }
 
-    console.log(this.tokensListing);
+    //// get lent tokens
+let lentTokens =   +(await this.fanToEarn.getTokensLent(
+  this.dapp.signerAddress!
+)).toString()
+
+for(let i=1;i<= lentTokens;i++){
+  let tokenId = +(await this.fanToEarn.getTokensIdByPos(this.dapp.signerAddress!,i-1)).toString();
+  let tokenObject = await this.fanToEarn.nftLending(tokenId);
+  this.tokensLent.push(tokenObject);
+
+}
+
+
     this.store.dispatch(Web3Actions.chainBusy({ status: false }));
   }
 
