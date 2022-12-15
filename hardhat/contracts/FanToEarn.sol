@@ -54,7 +54,7 @@ contract FanToEarn is ERC721Enumerable {
 
   mapping(address => LentByUser) public nftLentByUser;
 
-  constructor(IOps _ops) ERC721("name", "symbol") {
+  constructor(IOps _ops) ERC721("Gelato NFT Lend", "NFTL") {
     owner = msg.sender;
     ops = _ops;
     gelato = IOps(_ops).gelato();
