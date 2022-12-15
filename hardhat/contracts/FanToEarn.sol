@@ -57,6 +57,7 @@ contract FanToEarn is ERC721Enumerable {
   constructor(IOps _ops) ERC721("name", "symbol") {
     owner = msg.sender;
     ops = _ops;
+    gelato = IOps(_ops).gelato();
   }
 
   // #region  ========== =============  LENDING LOGIC  ============= ============= //
@@ -101,9 +102,9 @@ contract FanToEarn is ERC721Enumerable {
     _safeTransfer(_ownerOf(_tokenId),msg.sender,_tokenId,"0x");
     nftLending[_tokenId].status = NFTStatus.BORROWED;
     nftLending[_tokenId].borrower = msg.sender;
+    nftLending[_tokenId].duration = duration * 60;
 
-
-    nftLending[_tokenId].returnTaskId =_createReturnNftTaksk(_tokenId,nft.duration);
+    nftLending[_tokenId].returnTaskId =_createReturnNftTaksk(_tokenId,nftLending[_tokenId].duration );
     (bool success, ) = payable(_ownerOf(_tokenId)).call{value: msg.value}("");
     require(success, "_transfer: ETH transfer failed");
 
@@ -198,7 +199,18 @@ contract FanToEarn is ERC721Enumerable {
   }
 
   //@dev executing function to be called by Gelato
-  function returnNft(uint256 _tokenId) public onlyOps {
+   function returnNft(uint256 _tokenId) public onlyOps { 
+
+    (uint256 fee, address feeToken) = IOps(ops).getFeeDetails();
+
+    transfer(fee, feeToken);
+    _returnNft(_tokenId);
+
+
+   }
+
+
+  function _returnNft(uint256 _tokenId) public  {
     nftLending[_tokenId].status = NFTStatus.LISTED;
     _safeTransfer(_ownerOf(_tokenId),nftLending[_tokenId].owner,_tokenId,"0x");
 

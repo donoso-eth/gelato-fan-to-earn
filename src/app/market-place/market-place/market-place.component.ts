@@ -41,7 +41,7 @@ export class MarketPlaceComponent extends DappBaseComponent implements OnInit{
   utils = utils;  
 
   ngOnInit(): void {
-    this.initUi();
+   // this.initUi();
   }
 
 async initUi(){
@@ -52,14 +52,19 @@ async initUi(){
 
 
   async getState() {
+
+    if(this.readFanToEarn == undefined){
+      await this.instantiateReadContract();
+    }
+
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     this.listedNFTs = [];
 
     let nrListed = +(await this.readFanToEarn.nrNftsListed()).toString();
 
     for (let i = 0; i < nrListed; i++) {
-      let tokenId = +(await this.fanToEarn.nftsListed(i)).toString();
-      let tokenObject = await this.fanToEarn.nftLending(tokenId);
+      let tokenId = +(await this.readFanToEarn.nftsListed(i)).toString();
+      let tokenObject = await this.readFanToEarn.nftLending(tokenId);
       this.listedNFTs.push(tokenObject);
     }
 
@@ -135,11 +140,13 @@ async initUi(){
 
   override async hookForceDisconnect(): Promise<void> {
     this.connected = false;
+    this.getState()
     console.log('disconnecting')
   }
 
   override async hookFailedtoConnectNetwork(): Promise<void> {
     this.connected = false;
+    this.getState()
   }
 
   override async hookContractConnected(): Promise<void> {
@@ -150,8 +157,8 @@ async initUi(){
       FanToEarnMetadata.abi,
       signer
     ) as FanToEarn;
-
+    this.getState()
     this.connected = true;
-    this.instantiateReadContract();
+ 
   }
 }

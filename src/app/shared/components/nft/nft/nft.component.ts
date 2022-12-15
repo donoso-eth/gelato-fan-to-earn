@@ -72,6 +72,8 @@ export class NftComponent extends DappBaseComponent implements OnChanges {
 
   async doList(){
 
+    this.showListDialog = false;
+
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     this.store.dispatch(Web3Actions.chainBusyWithMessage({message: {body:'Listing your NFT ', header:'Please Wait'}}))
 
@@ -79,7 +81,7 @@ export class NftComponent extends DappBaseComponent implements OnChanges {
 
     await doSignerTransaction(this.fanToEarn.listToken(this.nft.id,cost));
 
-    this.showListDialog = false;
+  
 
     this.refreshEvent.emit();
  

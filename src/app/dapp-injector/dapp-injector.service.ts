@@ -171,6 +171,11 @@ async localWallet(index:number) {
 
     /////  check if Metamast is present in the browwser
     if (!!(window as any).ethereum) {
+
+      this.store.dispatch(Web3Actions.chainStatus({ status: 'wallet-not-connected' }));
+      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+      return
+      
       const metamaskProvider = new providers.Web3Provider(ethereum, 'any');
 
       const addresses = await metamaskProvider.listAccounts();

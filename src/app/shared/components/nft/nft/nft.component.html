@@ -5,7 +5,7 @@
 <br>
 <div style="height:20px">
 <div  >
-    <span>{{cost}} ETH/day</span>
+    <span>{{cost}} ETH/min</span>
     <br>
 </div>
 <div *ngIf="status == 'BORROWED'">
@@ -40,12 +40,12 @@ type="button" label="Remove" class="p-button-rounded mr-2 mb-2">
   Please set the 
     <span style="font-weight: bold; color: var(--primary-color)"
       >target price</span
-    > per day in ETH
+    > per min in ETH
   </p>
   <p class="">
     <p-inputNumber
       [formControl]="listAmountCtrl"
-      placeholder="Target Price per Day"
+      placeholder="Target Price per Min"
       [showButtons]="true"
       [maxFractionDigits]="4"
      [min]="0"

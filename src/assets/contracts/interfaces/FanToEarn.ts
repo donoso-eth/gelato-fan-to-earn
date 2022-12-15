@@ -21,6 +21,7 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 export interface FanToEarnInterface extends utils.Interface {
   functions: {
     "ETH()": FunctionFragment;
+    "_returnNft(uint256)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "borrowNft(uint256,uint256)": FunctionFragment;
@@ -53,6 +54,10 @@ export interface FanToEarnInterface extends utils.Interface {
   };
 
   encodeFunctionData(functionFragment: "ETH", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "_returnNft",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "approve",
     values: [string, BigNumberish]
@@ -153,6 +158,7 @@ export interface FanToEarnInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "withdraw", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "ETH", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "_returnNft", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "borrowNft", data: BytesLike): Result;
@@ -285,6 +291,11 @@ export interface FanToEarn extends BaseContract {
 
   functions: {
     ETH(overrides?: CallOverrides): Promise<[string]>;
+
+    _returnNft(
+      _tokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     approve(
       to: string,
@@ -456,6 +467,11 @@ export interface FanToEarn extends BaseContract {
 
   ETH(overrides?: CallOverrides): Promise<string>;
 
+  _returnNft(
+    _tokenId: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   approve(
     to: string,
     tokenId: BigNumberish,
@@ -610,6 +626,11 @@ export interface FanToEarn extends BaseContract {
 
   callStatic: {
     ETH(overrides?: CallOverrides): Promise<string>;
+
+    _returnNft(
+      _tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     approve(
       to: string,
@@ -803,6 +824,11 @@ export interface FanToEarn extends BaseContract {
   estimateGas: {
     ETH(overrides?: CallOverrides): Promise<BigNumber>;
 
+    _returnNft(
+      _tokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -946,6 +972,11 @@ export interface FanToEarn extends BaseContract {
 
   populateTransaction: {
     ETH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    _returnNft(
+      _tokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     approve(
       to: string,

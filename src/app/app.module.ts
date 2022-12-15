@@ -24,7 +24,7 @@ import { LoadingComponent } from './shared/components/loading/loading.component'
 import { AppTopBarComponent } from './shared/components/toolbar/app.topbar.component';
 import { AppFooterComponent } from './shared/components/footer/app.footer.component';
 
-const network = 'localhost';
+const network = 'goerli';
 
 @NgModule({
   declarations: [

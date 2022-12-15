@@ -49,15 +49,15 @@
 >
   <p style="margin-bottom: 5px;" class="line-height-10">
 
-  How many days you want to Borrow at 
+  How many mins you want to Borrow at 
     <span *ngIf="toBorrowNFT !== undefined" style="font-weight: bold; color: var(--primary-color)"
       >{{utils.formatEther(toBorrowNFT.cost)}} ETH</span
-    > per day?
+    > per min?
   </p>
   <p class="">
     <p-inputNumber
       [formControl]="borrowAmountCtrl"
-      placeholder="Days"
+      placeholder="Mins"
       [showButtons]="true"
      [min]="0"
      [step]="1"
