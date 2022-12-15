@@ -105,7 +105,7 @@ contract FanToEarn is ERC721Enumerable {
     nftLending[_tokenId].duration = duration * 60;
 
     nftLending[_tokenId].returnTaskId =_createReturnNftTaksk(_tokenId,nftLending[_tokenId].duration );
-    (bool success, ) = payable(_ownerOf(_tokenId)).call{value: msg.value}("");
+    (bool success, ) = payable(nftLending[_tokenId].owner).call{value: msg.value}("");
     require(success, "_transfer: ETH transfer failed");
 
     //update nft's by user lent
@@ -160,7 +160,7 @@ contract FanToEarn is ERC721Enumerable {
       "NFT_IS_BORROWED"
     );
 
-    nftLending[_tokenId].status = NFTStatus.PAUSED;
+ 
     super._beforeTokenTransfer(from, to, _tokenId, batchSize);
   }
 
@@ -210,7 +210,7 @@ contract FanToEarn is ERC721Enumerable {
    }
 
 
-  function _returnNft(uint256 _tokenId) public  {
+  function _returnNft(uint256 _tokenId) internal  {
     nftLending[_tokenId].status = NFTStatus.LISTED;
     _safeTransfer(_ownerOf(_tokenId),nftLending[_tokenId].owner,_tokenId,"0x");
 
@@ -225,8 +225,8 @@ contract FanToEarn is ERC721Enumerable {
       }
     }
 
-     nftLending[_tokenId].returnTaskId = bytes32(0);
-
+    nftLending[_tokenId].returnTaskId = bytes32(0);
+    nftLending[_tokenId].borrower = address(0);
     lentByUser.lents[foundIdPos] = lentByUser.lents[lentByUser.nrLent -1];
     lentByUser.lents.pop();
     lentByUser.nrLent--;

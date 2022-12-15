@@ -55,11 +55,11 @@ export class FanToEarnComponent
   }
 
 
-  async stop(){
-    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
-    await doSignerTransaction(this.fanToEarn._returnNft(1))
-    this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-  }
+  // async stop(){
+  //   this.store.dispatch(Web3Actions.chainBusy({ status: true }));
+  //   await doSignerTransaction(this.fanToEarn._returnNft(1))
+  //   this.store.dispatch(Web3Actions.chainBusy({ status: false }));
+  // }
 
   async getState() {
     this.tokensListing = [];

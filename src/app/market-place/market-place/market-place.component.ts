@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { DappBaseComponent, DappInjector, Web3Actions } from 'angular-web3';
 import { BigNumber, Contract, utils } from 'ethers';
@@ -10,6 +10,7 @@ import { FanToEarn } from 'src/assets/contracts/interfaces/FanToEarn';
 import FanToEarnMetadata from 'src/assets/contracts/fan-to-earn_metadata.json';
 import { INFT } from 'src/app/shared/models/nft';
 import { doSignerTransaction } from 'src/app/dapp-injector/classes/transactor';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-market-place',
@@ -35,7 +36,16 @@ export class MarketPlaceComponent extends DappBaseComponent implements OnInit{
     public messageService: MessageService
   ) {
     super(dapp, store);
-    this.store.dispatch(Web3Actions.chainBusy({ status: true }));
+    //this.store.dispatch(Web3Actions.chainBusy({ status: true }));
+
+
+    this.router.events
+    .pipe(filter(event => event instanceof NavigationEnd))
+    .subscribe((event) => {
+      console.log('console')
+      this.initUi();
+    });
+
 
   }
   utils = utils;  
@@ -53,10 +63,7 @@ async initUi(){
 
   async getState() {
 
-    if(this.readFanToEarn == undefined){
-      await this.instantiateReadContract();
-    }
-
+   
     this.store.dispatch(Web3Actions.chainBusy({ status: true }));
     this.listedNFTs = [];
 
@@ -65,7 +72,9 @@ async initUi(){
     for (let i = 0; i < nrListed; i++) {
       let tokenId = +(await this.readFanToEarn.nftsListed(i)).toString();
       let tokenObject = await this.readFanToEarn.nftLending(tokenId);
+      if (this.listedNFTs.filter(fil=> fil.id == tokenId).length == 0){
       this.listedNFTs.push(tokenObject);
+      }
     }
 
     this.store.dispatch(Web3Actions.chainBusy({ status: false }));
@@ -94,8 +103,7 @@ async initUi(){
       return
     }
 
-    console.log(token.owner);
-    console.log(this.dapp.signerAddress);
+ 
 
     if (token.owner.toLowerCase() == this.dapp.signerAddress?.toLowerCase()) {
       alert("The Nft is already yours")
@@ -140,13 +148,13 @@ async initUi(){
 
   override async hookForceDisconnect(): Promise<void> {
     this.connected = false;
-    this.getState()
+    this.initUi()
     console.log('disconnecting')
   }
 
   override async hookFailedtoConnectNetwork(): Promise<void> {
     this.connected = false;
-    this.getState()
+    this.initUi()
   }
 
   override async hookContractConnected(): Promise<void> {
@@ -157,7 +165,7 @@ async initUi(){
       FanToEarnMetadata.abi,
       signer
     ) as FanToEarn;
-    this.getState()
+    this.initUi()
     this.connected = true;
  
   }

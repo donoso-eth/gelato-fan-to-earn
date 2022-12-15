@@ -12,7 +12,8 @@
   <div *ngIf="route == 'ACCOUNT'">
   <span *ngIf="signerAddress.toLowerCase() == nft.owner.toLowerCase()"> to {{displayAddress(nft.borrower)}}</span>
   <span *ngIf="signerAddress.toLowerCase() != nft.owner.toLowerCase()"> from {{displayAddress(nft.owner)}}</span>
-</div>
+ </div>
+ <a  target="_blank" href="https://ops-interface-vue-git-feature-search-gelato.vercel.app/task/{{nft.returnTaskId}}?chainId=5">Gelato task</a>
   <br>
   <br>
 </div>

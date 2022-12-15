@@ -15,7 +15,7 @@
     >
     NFT Marketplace
     </a>
-    <a 
+    <a  *ngIf="blockchain_status == 'wallet-connected'"
     [routerLink]="'fan-to-earn'"
     style="margin-left: unset;width:150px;font-size:16px;color:#efe0e0;"
     class="p-link layout-topbar-button menu_css" routerLinkActive="active"

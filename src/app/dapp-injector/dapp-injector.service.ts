@@ -60,6 +60,9 @@ export class DappInjector implements OnDestroy {
     if (this.dappConfig.wallet !== 'wallet') {
       this.dappBootstrap();
     } else {
+      if(this.webModal == undefined){
+        await this.webModalInstanceLaunch()
+      }
       await this.webModal.connectWallet();
     }
   }
@@ -82,16 +85,19 @@ export class DappInjector implements OnDestroy {
       case 'wallet':
         const walletResult = await this.walletInitialization();
    
-        await this.webModalInstanceLaunch()
+     
 
         if (!!walletResult){
         this.DAPP_STATE.signer = walletResult.signer;
         this.DAPP_STATE.defaultProvider = walletResult.provider;
+        await this.webModalInstanceLaunch(walletResult.provider)
         setTimeout(async () => {
           this.webModal.connectWallet()
           
         }, 100);
        //  
+        } else {
+          await this.webModalInstanceLaunch()
         }
       
 
@@ -171,10 +177,6 @@ async localWallet(index:number) {
 
     /////  check if Metamast is present in the browwser
     if (!!(window as any).ethereum) {
-
-      this.store.dispatch(Web3Actions.chainStatus({ status: 'wallet-not-connected' }));
-      this.store.dispatch(Web3Actions.chainBusy({ status: false }));
-      return
       
       const metamaskProvider = new providers.Web3Provider(ethereum, 'any');
 
@@ -231,10 +233,13 @@ async localWallet(index:number) {
 
   /////// ------ Instanciate Web modal
 
-  private async webModalInstanceLaunch(){
+  private async webModalInstanceLaunch(provider?:any){
      ///// create web-modal/hoos for connection/disconection .etcc.....
+     if (provider == undefined){
      this.webModal = new Web3ModalComponent({ document: this.document }, this.store);
-    
+     } else {
+      this.webModal = new Web3ModalComponent({ document: this.document, provider }, this.store);
+     }
 
      await this.webModal.loadWallets();
      this.webModal.onConnect.pipe(takeUntil(this.destroyHooks)).subscribe(async (walletConnectProvider) => {

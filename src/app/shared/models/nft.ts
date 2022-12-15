@@ -14,5 +14,6 @@ export interface INFT {
     borrower:string,
     owner:string;
     name:string
+    returnTaskId:string
  
 }
